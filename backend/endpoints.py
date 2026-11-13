@@ -1,6 +1,6 @@
 from typing import Dict, Union
 from data import blooms
-from data.follows import follow, get_followed_usernames, get_inverse_followed_usernames
+from data.follows import follow, unfollow, get_followed_usernames, get_inverse_followed_usernames
 from data.users import (
     UserRegistrationError,
     get_suggested_follows,
@@ -143,6 +143,29 @@ def do_follow():
         )
 
     follow(current_user, follow_user)
+    return jsonify(
+        {
+            "success": True,
+        }
+    )
+
+
+@jwt_required()
+def do_unfollow():
+    type_check_error = verify_request_fields({"unfollow_username": str})
+    if type_check_error is not None:
+        return type_check_error
+
+    current_user = get_current_user()
+
+    unfollow_username = request.json["unfollow_username"]
+    unfollow_user = get_user(unfollow_username)
+    if unfollow_user is None:
+        return make_response(
+            (f"Cannot unfollow {unfollow_username} - user does not exist", 404)
+        )
+
+    unfollow(current_user, unfollow_user)
     return jsonify(
         {
             "success": True,
