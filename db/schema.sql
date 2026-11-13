@@ -13,6 +13,14 @@ CREATE TABLE blooms (
     send_timestamp TIMESTAMP NOT NULL
 );
 
+CREATE TABLE reblooms (
+    id SERIAL PRIMARY KEY,
+    rebloomer_id INT NOT NULL REFERENCES users(id),
+    bloom_id BIGINT NOT NULL REFERENCES blooms(id),
+    rebloom_timestamp TIMESTAMP NOT NULL,
+    UNIQUE(rebloomer_id, bloom_id)
+);
+
 CREATE TABLE follows (
     id SERIAL PRIMARY KEY,
     follower INT NOT NULL REFERENCES users(id),

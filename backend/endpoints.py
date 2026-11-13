@@ -182,21 +182,27 @@ def get_bloom(id_str):
 def home_timeline():
     current_user = get_current_user()
 
-    # Get blooms from followed users
+    # Get blooms and reblooms from followed users
     followed_users = get_followed_usernames(current_user)
     nested_user_blooms = [
         blooms.get_blooms_for_user(followed_user, limit=50)
         for followed_user in followed_users
     ]
+    nested_user_reblooms = [
+        blooms.get_reblooms_for_user(followed_user, limit=50)
+        for followed_user in followed_users
+    ]
 
-    # Flatten list of blooms from followed users
+    # Flatten list of blooms and reblooms from followed users
     followed_blooms = [bloom for blooms in nested_user_blooms for bloom in blooms]
+    followed_reblooms = [bloom for blooms in nested_user_reblooms for bloom in blooms]
 
-    # Get the current user's own blooms
+    # Get the current user's own blooms and reblooms
     own_blooms = blooms.get_blooms_for_user(current_user.username, limit=50)
+    own_reblooms = blooms.get_reblooms_for_user(current_user.username, limit=50)
 
-    # Combine own blooms with followed blooms
-    all_blooms = followed_blooms + own_blooms
+    # Combine own blooms and reblooms with followed blooms and reblooms
+    all_blooms = followed_blooms + followed_reblooms + own_blooms + own_reblooms
 
     # Sort by timestamp (newest first)
     sorted_blooms = list(
@@ -210,6 +216,24 @@ def user_blooms(profile_username):
     user_blooms = blooms.get_blooms_for_user(profile_username)
     user_blooms.reverse()
     return jsonify(user_blooms)
+
+
+@jwt_required()
+def do_rebloom():
+    try:
+        id_str = request.json["rebloom_id"]
+        id_int = int(id_str)
+    except ValueError:
+        return make_response((f"Invalid bloom id", 400))
+    
+    current_user = get_current_user()
+
+    blooms.rebloom(current_user, id_int)
+    return jsonify(
+        {
+            "success": True,
+        }
+    )
 
 
 @jwt_required()

@@ -15,7 +15,7 @@ import {
   handleBloomSubmit,
   handleTyping,
 } from "../components/bloom-form.mjs";
-import {createBloom} from "../components/bloom.mjs";
+import {createBloom, handleRebloom} from "../components/bloom.mjs";
 
 // Home view - logged in or not
 function homeView() {

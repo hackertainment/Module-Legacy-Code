@@ -10,7 +10,7 @@ import {
 import {createLogin, handleLogin} from "../components/login.mjs";
 import {createLogout, handleLogout} from "../components/logout.mjs";
 import {createProfile, handleFollow} from "../components/profile.mjs";
-import {createBloom} from "../components/bloom.mjs";
+import {createBloom, handleRebloom} from "../components/bloom.mjs";
 
 // Profile view - just this person's blooms and their profile
 function profileView(username) {
