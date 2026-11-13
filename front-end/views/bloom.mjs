@@ -6,7 +6,7 @@ import {
   getTimelineContainer,
   state,
 } from "../index.mjs";
-import {createBloom} from "../components/bloom.mjs";
+import {createBloom, handleRebloom} from "../components/bloom.mjs";
 import {createLogin, handleLogin} from "../components/login.mjs";
 import {createLogout, handleLogout} from "../components/logout.mjs";
 

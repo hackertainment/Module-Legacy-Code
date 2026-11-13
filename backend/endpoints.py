@@ -219,6 +219,24 @@ def user_blooms(profile_username):
 
 
 @jwt_required()
+def do_rebloom():
+    try:
+        id_str = request.json["rebloom_id"]
+        id_int = int(id_str)
+    except ValueError:
+        return make_response((f"Invalid bloom id", 400))
+    
+    current_user = get_current_user()
+
+    blooms.rebloom(current_user, id_int)
+    return jsonify(
+        {
+            "success": True,
+        }
+    )
+
+
+@jwt_required()
 def suggested_follows(limit_str):
     try:
         limit_int = int(limit_str)

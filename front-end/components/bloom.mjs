@@ -1,3 +1,5 @@
+import {apiService} from "../index.mjs";
+
 /**
  * Create a bloom component
  * @param {string} template - The ID of the template to clone
@@ -35,8 +37,8 @@ const createBloom = (template, bloom) => {
   );
   bloomRebloom.innerHTML = bloomRebloom.innerHTML.replace("X", String(bloom.count));
   rebloomUsername.setAttribute("href", `/profile/${bloom.rebloomer}`);
-  rebloomUsername.textContent = `and ${bloom.rebloomer}`;
-  rebloomButton.setAttribute("data-bloom", bloom.id);
+  rebloomUsername.textContent = `( ${bloom.rebloomer} )`;
+  rebloomButton.setAttribute("data-rebloom-id", bloom.id);
   rebloomButton.addEventListener("click", handleRebloom);
   //if (!isLoggedIn) {
   //  rebloomButton.style.display = "none";
@@ -57,10 +59,10 @@ const createBloom = (template, bloom) => {
 
 async function handleRebloom(event) {
   const button = event.target;
-  const bloomId = button.getAttribute("data-bloom");
-  if (!bloomId) return;
+  const rebloomId = button.getAttribute("data-rebloom-id");
+  if (!rebloomId) return;
 
-  //await apiService.rebloom(bloomId);
+  await apiService.rebloom(rebloomId);
 }
 
 function _formatHashtags(text) {
@@ -113,4 +115,4 @@ function _formatTimestamp(timestamp) {
   }
 }
 
-export {createBloom};
+export {createBloom, handleRebloom};

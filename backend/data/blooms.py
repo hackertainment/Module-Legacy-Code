@@ -6,6 +6,8 @@ from typing import Any, Dict, List, Optional
 from data.connection import db_cursor
 from data.users import User
 
+from psycopg2.errors import UniqueViolation
+
 
 @dataclass
 class Bloom:
@@ -197,6 +199,22 @@ def get_blooms_with_hashtag(
                 )
             )
     return blooms
+
+
+def rebloom(rebloomer: User, bloom_id: int) -> Bloom:
+    with db_cursor() as cur:
+        try:
+            cur.execute(
+                "INSERT INTO reblooms (rebloomer_id, bloom_id, rebloom_timestamp) VALUES (%(rebloomer_id)s, %(bloom_id)s, %(timestamp)s)",
+                dict(
+                    rebloomer_id=rebloomer.id,
+                    bloom_id=bloom_id,
+                    timestamp=datetime.datetime.now(datetime.timezone.utc),
+                ),
+            )
+        except UniqueViolation:
+            # Already rebloomed - treat as idempotent request.
+            pass
 
 
 def make_limit_clause(limit: Optional[int], kwargs: Dict[Any, Any]) -> str:
