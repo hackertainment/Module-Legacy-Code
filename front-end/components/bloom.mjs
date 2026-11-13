@@ -20,6 +20,9 @@ const createBloom = (template, bloom) => {
   const bloomTime = bloomFrag.querySelector("[data-time]");
   const bloomTimeLink = bloomFrag.querySelector("a:has(> [data-time])");
   const bloomContent = bloomFrag.querySelector("[data-content]");
+  const bloomRebloom = bloomFrag.querySelector("[data-rebloom]");
+  const rebloomUsername = bloomFrag.querySelector("[data-rebloomer]");
+  const rebloomButton = bloomFrag.querySelector("button");
 
   bloomArticle.setAttribute("data-bloom-id", bloom.id);
   bloomUsername.setAttribute("href", `/profile/${bloom.sender}`);
@@ -30,9 +33,35 @@ const createBloom = (template, bloom) => {
     ...bloomParser.parseFromString(_formatHashtags(bloom.content), "text/html")
       .body.childNodes
   );
+  bloomRebloom.innerHTML = bloomRebloom.innerHTML.replace("X", String(bloom.count));
+  rebloomUsername.setAttribute("href", `/profile/${bloom.rebloomer}`);
+  rebloomUsername.textContent = `and ${bloom.rebloomer}`;
+  rebloomButton.setAttribute("data-bloom", bloom.id);
+  rebloomButton.addEventListener("click", handleRebloom);
+  //if (!isLoggedIn) {
+  //  rebloomButton.style.display = "none";
+  //}
+
+  // Nobody rebloom
+  if (bloom.count == 0) {
+    bloomRebloom.style.display = "none";
+  }
+
+  // Not a rebloom
+  if (!bloom.rebloomer) {
+    rebloomUsername.style.display = "none";
+  }
 
   return bloomFrag;
 };
+
+async function handleRebloom(event) {
+  const button = event.target;
+  const bloomId = button.getAttribute("data-bloom");
+  if (!bloomId) return;
+
+  //await apiService.rebloom(bloomId);
+}
 
 function _formatHashtags(text) {
   if (!text) return text;
