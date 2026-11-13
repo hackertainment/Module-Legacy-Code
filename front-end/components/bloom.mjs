@@ -40,9 +40,6 @@ const createBloom = (template, bloom) => {
   rebloomUsername.textContent = `( ${bloom.rebloomer} )`;
   rebloomButton.setAttribute("data-rebloom-id", bloom.id);
   rebloomButton.addEventListener("click", handleRebloom);
-  //if (!isLoggedIn) {
-  //  rebloomButton.style.display = "none";
-  //}
 
   // Nobody rebloom
   if (bloom.count == 0) {
